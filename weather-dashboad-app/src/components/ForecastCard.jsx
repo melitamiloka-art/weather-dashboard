@@ -1,3 +1,5 @@
+import React from "react";
+
 const ForecastCard = ({ forecast }) => {
   if (!forecast || forecast.length === 0) {
     return <p className="text-center mt-6">No forecast data available</p>;
@@ -24,3 +26,5 @@ const ForecastCard = ({ forecast }) => {
     </div>
   );
 };
+
+export default ForecastCard;

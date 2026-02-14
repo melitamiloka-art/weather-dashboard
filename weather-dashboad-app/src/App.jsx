@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import SearchBar from "./components/SearchBar";
-import WeatherCard from "./components/WeatherCard";
-import ForecastCard from "./components/ForecastCard";
-import Error from "./components/Error";
-import { fetchCurrentWeather, fetchForecast } from "./api";
+import SearchBar from "./SearchBar";
+import WeatherCard from "./WeatherCard";
+import ForecastCard from "./ForecastCard";
+import Error from "./Error";
+
+const API_KEY = "YOUR_API_KEY";
 
 function App() {
   const [weather, setWeather] = useState(null);
@@ -13,23 +14,45 @@ function App() {
   const handleSearch = async (city) => {
     try {
       setError("");
-      const currentData = await fetchCurrentWeather(city);
-      const forecastData = await fetchForecast(city);
-
-      setWeather(currentData);
-      setForecast(forecastData);
-    } catch (err) {
       setWeather(null);
       setForecast([]);
+
+      
+      const weatherResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+      );
+      const weatherData = await weatherResponse.json();
+
+      if (weatherData.cod !== 200) {
+        throw new Error(weatherData.message);
+      }
+
+      setWeather(weatherData);
+
+      
+      const forecastResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`
+      );
+      const forecastData = await forecastResponse.json();
+
+      if (forecastData.cod !== "200") {
+        throw new Error(forecastData.message);
+      }
+
+      
+      const dailyForecast = forecastData.list.filter(
+        (item, index) => index % 8 === 0
+      );
+
+      setForecast(dailyForecast);
+    } catch (err) {
       setError(err.message);
     }
   };
 
   return (
     <div className="min-h-screen bg-blue-100 p-4">
-      <h1 className="text-3xl font-bold text-center mt-6">
-        Weather Dashboard
-      </h1>
+      <h1 className="text-3xl font-bold text-center">Weather App</h1>
 
       <SearchBar onSearch={handleSearch} />
 

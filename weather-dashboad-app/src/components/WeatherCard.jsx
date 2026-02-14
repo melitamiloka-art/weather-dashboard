@@ -1,6 +1,8 @@
 import React from "react";
 
 const WeatherCard = ({ data }) => {
+  if (!data) return null;
+
   const tempF = (data.main.temp * 9) / 5 + 32;
 
   return (
