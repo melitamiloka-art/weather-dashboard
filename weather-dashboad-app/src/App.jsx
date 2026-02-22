@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import SearchBar from "./components/SearchBar";
-import WeatherCard from "./components/WeatherCard";
-import ForecastCard from "./components/ForecastCard";
-import Error from "./components/Error";
+import { useState } from "react";
+import { fetchWeatherData } from "./api";
 
-const API_KEY = import.meta.env.VITE_API_KEY;
+import {SearchBar} from "../src/components/SearchBar"
+import WeatherCard from "../src/components/WeatherCard"
+import ForecastCard from "../src/components/ForecastCard"
 
 function App() {
   const [weather, setWeather] = useState(null);
@@ -17,34 +16,28 @@ function App() {
       setWeather(null);
       setForecast([]);
 
-      const weatherResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
-      );
-      const weatherData = await weatherResponse.json();
-      if (weatherData.cod !== 200) throw new Error(weatherData.message);
+      const { weatherData, forecastData } = await fetchWeatherData(city);
+
       setWeather(weatherData);
 
-      const forecastResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`
+      const dailyForecast = forecastData.list.filter((item) =>
+        item.dt_txt.includes("12:00:00")
       );
-      const forecastData = await forecastResponse.json();
-      if (forecastData.cod !== "200") throw new Error(forecastData.message);
 
-      const dailyForecast = forecastData.list.filter((_, index) => index % 8 === 0);
       setForecast(dailyForecast);
+
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <div className="min-h-screen bg-blue-100 p-6">
-      <h1 className="text-3xl font-bold text-center">Weather App</h1>
+    <>
       <SearchBar onSearch={handleSearch} />
-      {error && <Error message={error} />}
-      {weather && <WeatherCard data={weather} />}
-      {forecast.length > 0 && <ForecastCard forecast={forecast} />}
-    </div>
+      {weather && <WeatherCard data={weather}/>}
+      {forecast && <ForecastCard forecast={forecast}/>}
+
+    </>
   );
 }
 

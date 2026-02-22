@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const SearchBar = ({ onSearch }) => {
+export const SearchBar = ({ onSearch }) => {
   const [city, setCity] = useState("");
 
   const handleSubmit = (e) => {
@@ -8,6 +8,7 @@ const SearchBar = ({ onSearch }) => {
     if (!city.trim()) return;
     onSearch(city);
     setCity("");
+    console.log(city)
   };
 
   return (
@@ -28,5 +29,3 @@ const SearchBar = ({ onSearch }) => {
     </form>
   );
 };
-
-export default SearchBar;
