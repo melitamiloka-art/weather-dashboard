@@ -40,3 +40,23 @@
 .read-the-docs {
   color: #888;
 }
+
+
+.weather-tags-container {
+  display: flex;           /* arrange in a row */
+  flex-wrap: wrap;         /* allow multiple rows if needed */
+  justify-content: center; /* center the boxes */
+  gap: 12px;               /* space between each box */
+  margin-top: 16px;
+}
+
+.weather-tag {
+  background-color: #3b82f6; /* nice blue */
+  color: white;
+  padding: 10px 18px;        /* comfortable padding */
+  border-radius: 12px;       /* rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  text-transform: capitalize; /* capitalize first letters */
+  font-weight: 500;
+  white-space: nowrap;        /* prevent line breaks inside box */
+}
